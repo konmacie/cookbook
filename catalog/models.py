@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+import json
+
 
 class Category(models.Model):
     class Meta:
@@ -14,8 +16,8 @@ class Category(models.Model):
         max_length=50,
     )
 
-    def __str__(self)
-    return str(self.name)
+    def __str__(self):
+        return str(self.name)
 
 
 class Recipe(models.Model):
@@ -51,7 +53,25 @@ class Recipe(models.Model):
     directions = models.TextField(blank=True)
     ingredients = models.TextField(blank=True)
     edit_date = models.DateTimeField(auto_now_add=True)
-    pub_date = models.DateTimeField(blank=True)
+    pub_date = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
         return str(self.title)
+
+    @property
+    def ingredients_list(self):
+        '''
+        Return ingredients as list of dicts, as such can be used
+        as formset initial.
+        [{'desc':...}, {'desc':...}, ]
+        '''
+        return json.loads(self.ingredients)
+
+    @property
+    def directions_list(self):
+        '''
+        Returns directions as list of dicts, as such can be used
+        as formset initial.
+        [{'desc':...}, {'desc':...}, ]
+        '''
+        return json.loads(self.directions)
