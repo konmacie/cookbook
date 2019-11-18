@@ -7,5 +7,12 @@
     {% else %}
         User not logged in!
     {% endif %}
+    <ul>
+        
+        {% for recipe in latest_recipes %}
+            <li><a href="{{ recipe.get_absolute_url }}">{{ recipe }}</a> by {{ recipe.author }}</li>
+        {% endfor %}
+            
+    </ul>
 {% endblock content_block %}
     
