@@ -26,7 +26,7 @@ class IngredientForm(forms.Form):
 
 
 IngredientFormSet = forms.formset_factory(
-    IngredientForm, extra=2, min_num=1, validate_min=True,
+    IngredientForm, extra=0, min_num=1, validate_min=True,
 )
 
 
@@ -35,5 +35,5 @@ class DirectionForm(forms.Form):
 
 
 DirectionFormSet = forms.formset_factory(
-    DirectionForm, extra=2, min_num=1, validate_min=True
+    DirectionForm, extra=0, min_num=1, validate_min=True
 )

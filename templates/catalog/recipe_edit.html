@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+
+{% block title_block %}New recipe | Cookbook{% endblock title_block %}
+    
+
+{% block content_block %}
+<div class="container">
+    <h2>{{ recipe }}</h2>
+    <form method="POST">
+        {% csrf_token %}
+        {{ recipe_form.as_p }}
+        
+        <h3>Ingredients:</h3>
+        {{ ingredients_formset.management_form }}
+        {% for form in ingredients_formset %}
+            {{ form.as_p }}
+        {% endfor %}
+
+        <h3>Directions: </h3>
+        {{ directions_formset.management_form }}
+        {% for form in directions_formset %}
+            {{ form.as_p }}
+        {% endfor %}
+            
+        <input type="submit" value="Send">
+    </form>
+</div>    
+{% endblock content_block %}
+    
