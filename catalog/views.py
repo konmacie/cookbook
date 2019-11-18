@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.views.generic import TemplateView, DetailView
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
+from django.core.exceptions import PermissionDenied
 
 import json
 
@@ -55,9 +56,7 @@ def recipe_create(request):
             # relations manually.
             recipe_form.save_m2m()
 
-            return redirect('index')
-            # TODO: change index to recipe.get_absolute_url() when
-            # method implemented in models.Recipe.
+            return redirect(recipe)
     else:
         recipe_form = RecipeForm(prefix='recipe')
         ingredient_formset = IngredientFormSet(prefix='ingredients')
@@ -74,3 +73,18 @@ def recipe_create(request):
 class RecipeDetail(DetailView):
     model = Recipe
     context_object_name = 'recipe'
+
+    def get_object(self, queryset=None):
+        '''
+        Return the object the view is displaying.
+
+        If recipe has status 'draft', only author has access.
+        '''
+        obj = super().get_object(queryset)
+
+        # check if draft
+        if obj.status == Recipe.STATUS_DRAFT:
+            # if draft, check whether user is author of the recipe
+            if obj.author != self.request.user:
+                raise PermissionDenied()
+        return obj
