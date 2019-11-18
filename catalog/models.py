@@ -69,6 +69,8 @@ class Recipe(models.Model):
         as formset initial.
         [{'desc':...}, {'desc':...}, ]
         '''
+        if not self.ingredients:
+            return []
         return json.loads(self.ingredients)
 
     @property
@@ -78,4 +80,6 @@ class Recipe(models.Model):
         as formset initial.
         [{'desc':...}, {'desc':...}, ]
         '''
+        if not self.directions:
+            return []
         return json.loads(self.directions)

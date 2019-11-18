@@ -6,24 +6,13 @@
 
 {% block content_block %}
 <div class="container">
-    <h2>New recipe</h2>
+    <h2>Create new draft</h2>
     <form method="POST">
         {% csrf_token %}
         {{ recipe_form.as_p }}
-        
-        <h3>Ingredients:</h3>
-        {{ ingredients_formset.management_form }}
-        {% for form in ingredients_formset %}
-            {{ form.as_p }}
-        {% endfor %}
 
-        <h3>Directions: </h3>
-        {{ directions_formset.management_form }}
-        {% for form in directions_formset %}
-            {{ form.as_p }}
-        {% endfor %}
             
-        <input type="submit" value="Send">
+        <input type="submit" value="Next">
     </form>
 </div>    
 {% endblock content_block %}

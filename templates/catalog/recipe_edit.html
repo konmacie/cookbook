@@ -10,21 +10,51 @@
     <form method="POST">
         {% csrf_token %}
         {{ recipe_form.as_p }}
-        
+
         <h3>Ingredients:</h3>
-        {{ ingredients_formset.management_form }}
-        {% for form in ingredients_formset %}
-            {{ form.as_p }}
-        {% endfor %}
+        <div id="ingredients">
+            {{ ingredients_formset.management_form }}
+            {% for form in ingredients_formset %}
+                {{ form.as_p }}
+            {% endfor %}
+        </div>
+        <input type="button" class="btn btn-primary" id="ingredients_add" value="Add new">
+        <div id="ingredients_empty" style="display: none;">
+            {{ ingredients_formset.empty_form.as_p }}
+        </div>
 
         <h3>Directions: </h3>
-        {{ directions_formset.management_form }}
-        {% for form in directions_formset %}
-            {{ form.as_p }}
-        {% endfor %}
-            
-        <input type="submit" value="Send">
+        <div id="directions">
+            {{ directions_formset.management_form }}
+            {% for form in directions_formset %}
+                {{ form.as_p }}
+            {% endfor %}
+        </div>
+        <input type="button" class="btn btn-primary" id="directions_add" value="Add new">
+        <div id="directions_empty" style="display: none;">
+            {{ directions_formset.empty_form.as_p }}
+        </div>
+        <br>
+        <input type="submit" name="save_draft" value="Save draft">
+        <input type="submit" name="save_publish" value="Save and publish">
     </form>
-</div>    
+</div>
+
+<script>
+    // Add empty ingredient form
+    $('#ingredients_add').click(function() {
+        var form_idx = $('#id_ingredients-TOTAL_FORMS').val();
+        $('#ingredients').append($('#ingredients_empty').html().replace(/__prefix__/g, form_idx));
+        $('#id_ingredients-TOTAL_FORMS').val(parseInt(form_idx) + 1);
+    });
+
+
+    // Add empty direction form
+    $('#directions_add').click(function() {
+        var form_idx = $('#id_directions-TOTAL_FORMS').val();
+        $('#directions').append($('#directions_empty').html().replace(/__prefix__/g, form_idx));
+        $('#id_directions-TOTAL_FORMS').val(parseInt(form_idx) + 1);
+    });
+</script>
 {% endblock content_block %}
     
