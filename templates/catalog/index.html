@@ -2,17 +2,17 @@
 
 
 {% block content_block %}
-    {% if user.is_authenticated %}
-        {{ user }}
-    {% else %}
-        User not logged in!
-    {% endif %}
-    <ul>
-        
-        {% for recipe in latest_recipes %}
-            <li><a href="{{ recipe.get_absolute_url }}">{{ recipe }}</a> by {{ recipe.author }}</li>
-        {% endfor %}
+    <div class="container">
+        <h2>Newest recipes</h2>
+        <div class="sliding">
+            {% for recipe in latest_recipes %}
+                <div class="box-small box-shadowed">
+                    {{ recipe }}
+                </div>
+            {% endfor %}
             
-    </ul>
+        </div>
+    </div>
+    
 {% endblock content_block %}
     

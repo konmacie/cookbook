@@ -17,22 +17,18 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
 
     <!-- CSS -->
-    <!-- <link rel="stylesheet" href="{% static 'css/main.css' %}"> -->
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
 </head>
 <body>
-    <ul>
-        
-        {% for category in all_categories %}
-            <li><a href="{{ category.get_absolute_url }}">{{ category }}</a></li>
-        {% endfor %}
-            
-    </ul>
+    {% include 'includes/navbar.html' %}
+    <span style="margin: 20px;"></span>
     
     {% block content_block %}
         <div class="jumbotron">No content yet!</div>
     {% endblock content_block %}
-        
-
+    
+    <span style="margin: 20px;"></span>
+    {% include 'includes/footer.html' %}
 
 </body>
 </html>
