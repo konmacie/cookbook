@@ -6,5 +6,9 @@ class RecipeAdmin(admin.ModelAdmin):
     list_display = ['title', 'author', 'pub_date', 'edit_date']
 
 
-admin.site.register(Category)
+class CategoryAdmin(admin.ModelAdmin):
+    prepopulated_fields = {'slug': ('name',)}
+
+
+admin.site.register(Category, CategoryAdmin)
 admin.site.register(Recipe, RecipeAdmin)

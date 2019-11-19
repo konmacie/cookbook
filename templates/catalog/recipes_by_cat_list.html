@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+
+{% block content_block %}
+<div class="container">
+    <h1>{{ category }}</h1>
+    <ul>
+        
+        {% for recipe in recipes_list %}
+            <li><a href="{{ recipe.get_absolute_url }}">{{ recipe }}</a></li>
+        {% endfor %}
+            
+    </ul>
+    {% include 'includes/pagination.html' %}
+</div>    
+{% endblock content_block %}

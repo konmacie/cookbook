@@ -16,9 +16,17 @@ class Category(models.Model):
         unique=True,
         max_length=50,
     )
+    slug = models.SlugField(
+        primary_key=True,
+        unique=True,
+        null=False,
+    )
 
     def __str__(self):
         return str(self.name)
+
+    def get_absolute_url(self):
+        return reverse('recipes_by_category', kwargs={'slug': self.pk})
 
 
 class Recipe(models.Model):
