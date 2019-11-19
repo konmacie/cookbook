@@ -7,6 +7,8 @@ urlpatterns = [
     path('recipe/<int:pk>/', views.RecipeDetail.as_view(),
          name='recipe_detail'),
     path('recipe/<int:pk>/edit/', views.recipe_edit, name='recipe_edit'),
+    path('recipe/<int:pk>/publish/', views.recipe_publish,
+         name='recipe_publish'),
     path('category/<slug:slug>/', views.RecipesByCategoryList.as_view(),
          name='recipes_by_category'),
 ]

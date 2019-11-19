@@ -7,7 +7,7 @@ def latest_recipes(request):
     '''
     recipes = Recipe.objects\
         .filter(status=Recipe.STATUS_PUBLISHED)\
-        .select_related('author')[:5]
+        .select_related('author')[:10]
     return {'latest_recipes': recipes}
 
 

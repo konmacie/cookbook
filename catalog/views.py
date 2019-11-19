@@ -19,12 +19,12 @@ class IndexView(TemplateView):
 @login_required
 @transaction.atomic  # atomic in case save_m2m() failed
 def recipe_create_draft(request):
-    '''
+    """
     View for creating new recipe with status 'draft'.
     Has only 2 fields in the form: title and categories.
     Ingerdients and directions can be set in edit view.
     After succesfully commiting new draft, redirects to edit view.
-    '''
+    """
     if request.method == "POST":
         recipe_form = RecipeForm(request.POST, prefix='recipe')
 
@@ -54,10 +54,10 @@ def recipe_create_draft(request):
 @login_required
 @transaction.atomic  # atomic in case save_m2m() failed
 def recipe_edit(request, pk):
-    '''
+    """
     View used to edit and publish existing Recipe object.
     Recipe must have status 'draft' and user must be an author to have access.
-    '''
+    """
     recipe = get_object_or_404(Recipe, pk=pk, status=Recipe.STATUS_DRAFT)
     # check if user is recipe's author
     if recipe.author != request.user:
@@ -93,19 +93,14 @@ def recipe_edit(request, pk):
             recipe_form.save(commit=False)
             recipe.ingredients = ingredients
             recipe.directions = directions
-
+            recipe.save()
+            recipe_form.save_m2m()
             # Check which button was clicked
             if request.POST.get('save_publish'):
                 # If 'Save and publish'
-                recipe.status = Recipe.STATUS_PUBLISHED
-                recipe.pub_date = datetime.now()
-                recipe.save()
-                recipe_form.save_m2m()
-                return redirect(recipe)
-            else:
-                # If 'Save draft'
-                recipe.save()
-                recipe_form.save_m2m()
+                return redirect(
+                    reverse('recipe_publish', kwargs={'pk': recipe.pk}))
+            # If 'Save draft' stays on the same page
 
     else:
         recipe_form = RecipeForm(instance=recipe, prefix='recipe')
@@ -122,18 +117,42 @@ def recipe_edit(request, pk):
     return render(request, 'catalog/recipe_edit.html', context)
 
 
+@login_required
+def recipe_publish(request, pk):
+    """
+    For confirming publication of a recipe.
+    With GET method shows template and confirmation form.
+    With POST method publishes recipe and redirects to recipe's detail view.
+    """
+    recipe = get_object_or_404(Recipe, pk=pk, status=Recipe.STATUS_DRAFT)
+    if recipe.author != request.user:
+        raise PermissionDenied()
+
+    if request.method == 'POST':
+        recipe.status = Recipe.STATUS_PUBLISHED
+        recipe.pub_date = datetime.now()
+        recipe.save()
+        return redirect(recipe)
+
+    # If 'GET' method
+    context = {
+        'recipe': recipe,
+    }
+    return render(request, 'catalog/recipe_publish.html', context)
+
+
 class RecipeDetail(DetailView):
-    '''
+    """
     View showing details of selected recipe.
     If recipe has status 'draft', only author has access.
-    '''
+    """
     model = Recipe
     context_object_name = 'recipe'
 
     def get_object(self, queryset=None):
-        '''
+        """
         Return the object the view is displaying.
-        '''
+        """
         obj = super().get_object(queryset)
 
         # check if draft
@@ -145,9 +164,9 @@ class RecipeDetail(DetailView):
 
 
 class RecipesByCategoryList(ListView):
-    '''
+    """
     Shows list of published recipes in selected category.
-    '''
+    """
     model = Recipe
     context_object_name = 'recipes_list'
     template_name = 'catalog/recipes_by_cat_list.html'

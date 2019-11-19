@@ -72,22 +72,22 @@ class Recipe(models.Model):
 
     @property
     def ingredients_list(self):
-        '''
+        """
         Return ingredients as list of dicts, as such can be used
         as formset initial.
         [{'desc':...}, {'desc':...}, ]
-        '''
+        """
         if not self.ingredients:
             return []
         return json.loads(self.ingredients)
 
     @property
     def directions_list(self):
-        '''
+        """
         Returns directions as list of dicts, as such can be used
         as formset initial.
         [{'desc':...}, {'desc':...}, ]
-        '''
+        """
         if not self.directions:
             return []
         return json.loads(self.directions)
