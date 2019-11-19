@@ -20,7 +20,13 @@
     <!-- <link rel="stylesheet" href="{% static 'css/main.css' %}"> -->
 </head>
 <body>
-    
+    <ul>
+        
+        {% for category in all_categories %}
+            <li><a href="{{ category.get_absolute_url }}">{{ category }}</a></li>
+        {% endfor %}
+            
+    </ul>
     
     {% block content_block %}
         <div class="jumbotron">No content yet!</div>

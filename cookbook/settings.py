@@ -68,6 +68,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 # custom preocessors
                 'catalog.context_processors.latest_recipes',
+                'catalog.context_processors.all_categories',
             ],
         },
     },
