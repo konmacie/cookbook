@@ -5,6 +5,7 @@
 <div class="container">
     <h1>{{ recipe.title }}</h1>
     <b>Status: </b> {{ recipe.status }}
+    <img src="{{ recipe.photo.url }}" alt="">
     <h3>Ingredients:</h3>
     <ul>
     {% for ingredient in recipe.ingredients_list %}

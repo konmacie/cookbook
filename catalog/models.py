@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.urls import reverse
 
+from catalog import util
 import json
 
 
@@ -63,6 +64,13 @@ class Recipe(models.Model):
     ingredients = models.TextField(blank=True)
     edit_date = models.DateTimeField(auto_now_add=True)
     pub_date = models.DateTimeField(blank=True, null=True)
+
+    photo = models.ImageField(
+        blank=True,
+        null=True,
+        default=None,
+        upload_to=util.get_image_path
+    )
 
     def __str__(self):
         return str(self.title)

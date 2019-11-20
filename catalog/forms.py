@@ -1,4 +1,5 @@
 from django import forms
+from django.core.exceptions import ValidationError
 from catalog.models import Recipe, Category
 
 
@@ -19,6 +20,18 @@ class RecipeForm(forms.ModelForm):
         queryset=Category.objects.all(),
         required=True,
     )
+
+
+class RecipePhotoForm(forms.Form):
+    photo = forms.ImageField(required=False)
+
+    def clean_photo(self):
+        image = self.cleaned_data.get('photo', None)
+        if image:
+            if image.size > 2*1024*1024:  # 2MB
+                raise ValidationError("Image too large! Allowed up tp 1MB.")
+            return image
+        return None
 
 
 class IngredientForm(forms.Form):

@@ -8,7 +8,8 @@ from django.urls import reverse
 import json
 from datetime import datetime
 
-from catalog.forms import RecipeForm, IngredientFormSet, DirectionFormSet
+from catalog.forms import (
+    RecipeForm, IngredientFormSet, DirectionFormSet, RecipePhotoForm)
 from catalog.models import Recipe, Category
 
 
@@ -66,6 +67,8 @@ def recipe_edit(request, pk):
     if request.method == "POST":
         recipe_form = RecipeForm(
             instance=recipe, data=request.POST, prefix='recipe')
+        photo_form = RecipePhotoForm(
+            request.POST, request.FILES, prefix='photo')
         ingredient_formset = IngredientFormSet(
             request.POST, prefix='ingredients',
             initial=recipe.ingredients_list)
@@ -75,7 +78,8 @@ def recipe_edit(request, pk):
 
         if (recipe_form.is_valid()
                 and ingredient_formset.is_valid()
-                and direction_formset.is_valid()):
+                and direction_formset.is_valid()
+                and photo_form.is_valid()):
             # Dumping ingredient_formset into json string.
             ingredients = [{'desc': form.cleaned_data.get('desc')}
                            for form in ingredient_formset
@@ -88,9 +92,13 @@ def recipe_edit(request, pk):
                           if form.cleaned_data.get('desc') is not None]
             directions = json.dumps(directions)
 
+            photo = request.FILES.get('photo-photo', None)
+
             # Set ingredients and directions to respective Recipe fields
             # and save object.
             recipe_form.save(commit=False)
+            if photo:
+                recipe.photo = photo
             recipe.ingredients = ingredients
             recipe.directions = directions
             recipe.save()
@@ -101,9 +109,12 @@ def recipe_edit(request, pk):
                 return redirect(
                     reverse('recipe_publish', kwargs={'pk': recipe.pk}))
             # If 'Save draft' stays on the same page
+            else:
+                return redirect(recipe)
 
     else:
         recipe_form = RecipeForm(instance=recipe, prefix='recipe')
+        photo_form = RecipePhotoForm(prefix='photo')
         ingredient_formset = IngredientFormSet(
             prefix='ingredients', initial=recipe.ingredients_list)
         direction_formset = DirectionFormSet(
@@ -111,6 +122,7 @@ def recipe_edit(request, pk):
     context = {
         'recipe': recipe,
         'recipe_form': recipe_form,
+        'photo_form': photo_form,
         'ingredients_formset': ingredient_formset,
         'directions_formset': direction_formset,
     }
