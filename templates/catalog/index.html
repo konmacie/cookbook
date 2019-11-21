@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{% load static %}
 
 {% block content_block %}
     <div class="container">
@@ -7,7 +7,14 @@
         <div class="sliding">
             {% for recipe in latest_recipes %}
                 <div class="box-small box-shadowed">
-                    {{ recipe }}
+                    <a href="{{ recipe.get_absolute_url }}">
+                        {% if recipe.photo %}
+                            <div class="image-box-small" style="background-image: url('{{ recipe.photo.url }}');"></div>
+                        {% else %}
+                            <div class="image-box-small" style="background-image: url('{% get_media_prefix %}no-image.png');"></div>
+                        {% endif %}
+                        <h5>{{ recipe|truncatechars:100 }}</h5>
+                    </a>
                 </div>
             {% endfor %}
             

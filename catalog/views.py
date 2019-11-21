@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import TemplateView, DetailView, ListView
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import transaction
 from django.core.exceptions import PermissionDenied
 from django.urls import reverse
@@ -181,7 +182,7 @@ class RecipesByCategoryList(ListView):
     """
     model = Recipe
     context_object_name = 'recipes_list'
-    template_name = 'catalog/recipes_by_cat_list.html'
+    template_name = 'catalog/recipes_list.html'
     paginate_by = 10
     allow_empty = True
 
@@ -198,8 +199,70 @@ class RecipesByCategoryList(ListView):
     def get_context_data(self, object_list=None, **kwargs):
         context = super().get_context_data()
         context.update(category=self.category)
+        context.update(title=str(self.category))
         return context
 
+
+class RecipesNewest(ListView):
+    """
+    Shows up to 100 most recent recipes with status 'published'.
+    """
+    model = Recipe
+    context_object_name = 'recipes_list'
+    template_name = 'catalog/recipes_list.html'
+    paginate_by = 10
+    allow_empty = True
+
+    extra_context = {
+        'title': 'Newest recipes'
+    }
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        queryset = queryset.filter(status=Recipe.STATUS_PUBLISHED)[:100]
+        return queryset
+
+
+class MyRecipes(LoginRequiredMixin, ListView):
+    """
+    Shows list of authenticated user's recipes with status 'published'.
+    """
+    model = Recipe
+    context_object_name = 'recipes_list'
+    template_name = 'catalog/recipes_list.html'
+    paginate_by = 10
+    allow_empty = True
+
+    extra_context = {
+        'title': 'My recipes'
+    }
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        queryset = queryset.filter(
+            status=Recipe.STATUS_PUBLISHED, author=self.request.user)
+        return queryset
+
+
+class MyDrafts(LoginRequiredMixin, ListView):
+    """
+    Shows list of authenticated user's recipes with status 'draft'.
+    """
+    model = Recipe
+    context_object_name = 'recipes_list'
+    template_name = 'catalog/recipes_list.html'
+    paginate_by = 10
+    allow_empty = True
+
+    extra_context = {
+        'title': 'My drafts'
+    }
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        queryset = queryset.filter(
+            status=Recipe.STATUS_DRAFT, author=self.request.user)
+        return queryset
 
 # @login_required
 # @transaction.atomic  # atomic in case save_m2m() failed

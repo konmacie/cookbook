@@ -1,11 +1,16 @@
 {% extends 'base.html' %}
-
+{% load static %}
 
 {% block content_block %}
 <div class="container">
     <h1>{{ recipe.title }}</h1>
     <b>Status: </b> {{ recipe.status }}
-    <img src="{{ recipe.photo.url }}" alt="">
+    
+    {% if recipe.photo %}
+        <img src="{{ recipe.photo.url }}" alt="">
+    {% else %}
+        <img src="{% get_media_prefix %}no-image.png" alt="">
+    {% endif %}
     <h3>Ingredients:</h3>
     <ul>
     {% for ingredient in recipe.ingredients_list %}

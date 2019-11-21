@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block title_block %}{{ title }} | Cookbook{% endblock title_block %}
+    
+
+
+{% block content_block %}
+<div class="container">
+    <h1>{{ title }}</h1>
+        
+        {% for recipe in recipes_list %}
+            <div class="box-long box-shadowed">
+                <a href="{{ recipe.get_absolute_url }}">
+                    {% if recipe.photo %}
+                        <div class="image-box-long" style="background-image: url('{{ recipe.photo.url }}');"></div>
+                    {% else %}
+                        <div class="image-box-long" style="background-image: url('{% get_media_prefix %}no-image.png');"></div>
+                    {% endif %}
+                    <h3>{{ recipe}}</h3>
+                </a>
+            </div>
+        {% endfor %}
+            
+    {% include 'includes/pagination.html' %}
+</div>    
+{% endblock content_block %}

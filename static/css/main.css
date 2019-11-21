@@ -42,7 +42,14 @@ footer i {
     padding: 0;
     width: 190px;
     height: 300px;
+}
 
+.box-long {
+    display: block;
+    margin: 10px;
+    padding: 0;
+    width: 100%;
+    height: 100px;
 }
 
 .box-shadowed {
@@ -52,6 +59,36 @@ footer i {
     box-shadow: 5px 5px 20px -5px rgba(0,0,0,0.5);
 }
 
+.image-box-small {
+    width: 190px;
+    height: 190px;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.image-box-long {
+    height: 100px;
+    width: 200px;
+    margin-right: 20px;
+    float: left;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.box-small h5{
+    padding: 5px;
+}
+
+.box-long h3{
+    padding: 5px;
+}
+
+.box-small a, .box-long a {
+    text-decoration: none;
+    color: black;
+}
 
 @media screen and (max-width: 1240px) {
     .sliding {
@@ -71,5 +108,22 @@ footer i {
         padding: 0;
         width: 190px;
         height: 300px;
+    }
+}
+
+@media screen and (max-width: 400px){
+    .box-long{
+        width: 90%;
+        height: 250px;
+    }
+    .box-long h3 {
+        font-size: 1.5rem;
+    }
+    .image-box-long {
+        width: 100%;
+        height: 150px;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
     }
 }
