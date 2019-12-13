@@ -1,5 +1,6 @@
 .vscode/
 __pycache__/
 db*
+*.old
 *.pyc
 user_photos/
