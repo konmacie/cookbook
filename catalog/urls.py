@@ -1,19 +1,35 @@
 from django.urls import path, include
-from . import views
+from catalog import views
 
 urlpatterns = [
-    path('', views.IndexView.as_view(), name='index'),
-    path('recipe/new/', views.recipe_create_draft, name='recipe_create'),
-    path('recipe/<int:pk>/', views.RecipeDetail.as_view(),
+    # PUBLIC VIEWS
+    path('', views.public.IndexView.as_view(), name='index'),
+    path('recipe/<int:pk>/', views.public.RecipeDetail.as_view(),
          name='recipe_detail'),
-    path('recipe/<int:pk>/edit/', views.recipe_edit, name='recipe_edit'),
-    path('recipe/<int:pk>/publish/', views.recipe_publish,
-         name='recipe_publish'),
-    path('category/<slug:slug>/', views.RecipesByCategoryList.as_view(),
+    path('category/<slug:slug>/', views.public.RecipesByCategoryList.as_view(),
          name='recipes_by_category'),
-    path('newest/', views.RecipesNewest.as_view(), name='recipes_newest'),
-    path('recipes/my/published/', views.MyRecipes.as_view(),
+    path('newest/', views.public.RecipesNewest.as_view(),
+         name='recipes_newest'),
+    path('popular/', views.public.RecipesPopular.as_view(),
+         name='recipes_popular'),
+
+    # USER VIEWS
+    path('recipe/new/', views.user.recipe_create_draft, name='recipe_create'),
+    path('recipes/my/published/', views.user.MyRecipes.as_view(),
          name='my_recipes'),
-    path('recipes/my/drafts/', views.MyDrafts.as_view(),
+    path('recipes/my/drafts/', views.user.MyDrafts.as_view(),
          name='my_drafts'),
+    path('draft/<int:pk>/', views.user.DraftDetail.as_view(),
+         name='draft_detail'),
+    path('recipes/my/favourite/', views.user.MyFavourites.as_view(),
+         name='my_favourites'),
+    path('recipe/<int:pk>/edit/', views.user.recipe_edit, name='recipe_edit'),
+    path('recipe/<int:pk>/publish/', views.user.recipe_publish,
+         name='recipe_publish'),
+    path('recipe/<int:pk>/delete/', views.user.recipe_delete,
+         name='recipe_delete'),
+
+    # AJAX
+    path('recipe/<int:pk>/favourite/', views.ajax.favourite_view,
+         name='favourite_toggle'),
 ]

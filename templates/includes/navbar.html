@@ -1,5 +1,6 @@
 <!-- <header> -->
-    <nav class="navbar sticky-top navbar-expand-md navbar-dark bg-dark">
+    <!-- <nav class="navbar sticky-top navbar-expand-md navbar-dark bg-dark"> -->
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark">
         <a class="navbar-brand" href="{% url 'index' %}">C<i class="fas fa-cookie"></i><i class="fas fa-cookie-bite"></i>kbook</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
             <span class="navbar-toggler-icon"></span>
@@ -13,7 +14,7 @@
                     <a class="nav-link" href="{% url 'recipes_newest' %}">Newest</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'index' %}">Most popular</a>
+                    <a class="nav-link" href="{% url 'recipes_popular' %}">Most popular</a>
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
@@ -41,8 +42,9 @@
                         <i class="fas fa-user-circle"></i> {{ user }}
                     </a>
                     <div class="dropdown-menu dropdown-menu-lg-right" aria-labelledby="userDropdown">
-                        <a class="dropdown-item" href="{% url 'my_recipes' %}">My recipes</a>
+                        <a class="dropdown-item" href="{% url 'my_favourites' %}">Favourite</a>
                         <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="{% url 'my_recipes' %}">My recipes</a>
                         <a class="dropdown-item" href="{% url 'my_drafts' %}">My drafts</a>
                         <a class="dropdown-item" href="{% url 'recipe_create' %}">New draft</a>
                         <div class="dropdown-divider"></div>

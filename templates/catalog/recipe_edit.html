@@ -1,43 +1,80 @@
 {% extends 'base.html' %}
+{% load static %}
 
-
-{% block title_block %}New recipe | Cookbook{% endblock title_block %}
+{% block title_block %}Edit: {{ recipe }} | Cookbook{% endblock title_block %}
     
 
 {% block content_block %}
 <div class="container">
     <h2>{{ recipe }}</h2>
     <form method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ recipe_form.as_p }}
-        {{ photo_form.as_p }}
-        <h3>Ingredients:</h3>
-        <div id="ingredients">
-            {{ ingredients_formset.management_form }}
-            {% for form in ingredients_formset %}
-                {{ form.as_p }}
-            {% endfor %}
+    {% csrf_token %}
+        <div class="row">
+            <div class="col">
+                <div class="box box-shadowed">
+                    <div class="row">
+                        <div class="col-md-7">
+                            {{ recipe_form.as_p }}
+                            
+                        </div>
+                        <div class="col-md-5">
+                            {{ photo_form.as_p }}
+                            {% if recipe.photo %}
+                                <a href="{{ recipe.photo.url }}" target="_blank">
+                                    <div class="image-box-small" style="background-image: url('{{ recipe.photo.url }}');">
+                                    </div>
+                                </a>
+                                
+                            {% else %}
+                                <div class="image-box-small" style="background-image: url('{% get_media_prefix %}no-image.png');"></div>
+                            {% endif %}
+                        </div>
+                    </div> 
+                </div>
+            </div>
+            
         </div>
-        <input type="button" class="btn btn-primary" id="ingredients_add" value="Add new">
-        <div id="ingredients_empty" style="display: none;">
-            {{ ingredients_formset.empty_form.as_p }}
+        <div class="row">
+            <div class="col-md-4">
+                <div class="box box-shadowed">
+                    <h3>Ingredients:</h3>
+                    <div id="ingredients">
+                        {{ ingredients_formset.management_form }}
+                        {% for form in ingredients_formset %}
+                            {{ form.as_p }}
+                        {% endfor %}
+                    </div>
+                    
+                    <input type="button" class="btn btn-primary" id="ingredients_add" value="Add new">
+                    <div id="ingredients_empty" style="display: none;">
+                        {{ ingredients_formset.empty_form.as_p }}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="box box-shadowed">
+                    <h3>Directions: </h3>
+                    {{ directions_formset.management_form }}
+                    <ol id="directions">
+                        {% for form in directions_formset %}
+                            <li>{{ form }}</li>
+                        {% endfor %}
+                    </ol>
+                    
+                    <input type="button" class="btn btn-primary" id="directions_add" value="Add new">
+                    <div id="directions_empty" style="display: none;">
+                        <li>{{ directions_formset.empty_form }}</li>
+                    </div>
+                </div>
+            </div>
         </div>
-
-        <h3>Directions: </h3>
-        <div id="directions">
-            {{ directions_formset.management_form }}
-            {% for form in directions_formset %}
-                {{ form.as_p }}
-            {% endfor %}
+        <div class="box">
+            <input type="submit" name="save_draft" value="Save draft">
+            <input type="submit" name="save_publish" value="Save and publish">
         </div>
-        <input type="button" class="btn btn-primary" id="directions_add" value="Add new">
-        <div id="directions_empty" style="display: none;">
-            {{ directions_formset.empty_form.as_p }}
-        </div>
-        <br>
-        <input type="submit" name="save_draft" value="Save draft">
-        <input type="submit" name="save_publish" value="Save and publish">
     </form>
+    
+        
 </div>
 
 <script>

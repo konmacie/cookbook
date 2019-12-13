@@ -76,6 +76,8 @@ class Recipe(models.Model):
         return str(self.title)
 
     def get_absolute_url(self):
+        if self.status == Recipe.STATUS_DRAFT:
+            return reverse('draft_detail', kwargs={'pk': self.pk})
         return reverse('recipe_detail', kwargs={'pk': self.pk})
 
     @property
@@ -99,3 +101,9 @@ class Recipe(models.Model):
         if not self.directions:
             return []
         return json.loads(self.directions)
+
+
+class Favourite(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
+    timestamp = models.DateTimeField(auto_now_add=True)

@@ -30,9 +30,14 @@ footer i {
 
 .sliding {
     width: 100%;
-    margin: 0;
+    margin: 0 0 20px 0;
     padding: 0;
     overflow: hidden
+}
+
+.box {
+    padding: 15px;
+    margin-bottom: 20px;
 }
 
 .box-small {
@@ -42,6 +47,9 @@ footer i {
     padding: 0;
     width: 190px;
     height: 300px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: normal;
 }
 
 .box-long {
@@ -77,6 +85,18 @@ footer i {
     background-size: cover;
 }
 
+.recipe-banner {
+    width:100%;
+    height: 250px;
+    margin: 20px 0 20px 0;
+    background: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.2)) , var(--image-url) center center;
+    background-size: cover;
+    color: white;
+    font-size: x-large;
+    padding: 10px;
+}
+
+
 .box-small h5{
     padding: 5px;
 }
@@ -90,11 +110,32 @@ footer i {
     color: black;
 }
 
+.box-list li {
+    width: 90%;
+    padding: 10px;
+    border-bottom: 1px solid gray;
+    
+}
+
+.box-list li:last-child {
+    padding: 10px;
+    border-bottom: none;
+}
+
+ul.box-list {
+    list-style-type: none;
+    padding-left: 20px;
+}
+
+#ingredients label, #directions label{
+    display: none;
+}
+
+
 @media screen and (max-width: 1240px) {
     .sliding {
         width: 100%;
         height: 350px;
-        margin: 0;
         padding: 0;
         white-space: nowrap;
         overflow-x: auto;
@@ -108,7 +149,11 @@ footer i {
         padding: 0;
         width: 190px;
         height: 300px;
+        overflow-x: auto;
+        overflow-y: hidden;
+        white-space: normal;
     }
+
 }
 
 @media screen and (max-width: 400px){

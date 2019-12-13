@@ -1,3 +1,5 @@
+""" Views needing user to be authenticated """
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import TemplateView, DetailView, ListView
 from django.contrib.auth.decorators import login_required
@@ -11,11 +13,7 @@ from datetime import datetime
 
 from catalog.forms import (
     RecipeForm, IngredientFormSet, DirectionFormSet, RecipePhotoForm)
-from catalog.models import Recipe, Category
-
-
-class IndexView(TemplateView):
-    template_name = 'catalog/index.html'
+from catalog.models import Recipe, Category, Favourite
 
 
 @login_required
@@ -154,73 +152,27 @@ def recipe_publish(request, pk):
     return render(request, 'catalog/recipe_publish.html', context)
 
 
-class RecipeDetail(DetailView):
+@login_required
+def recipe_delete(request, pk):
     """
-    View showing details of selected recipe.
-    If recipe has status 'draft', only author has access.
+    For confirming deletion of a recipe.
+    With GET method shows template and confirmation form.
+    With POST method deletes recipe and redirects to index.
+    Recipe must have status 'draft'.
     """
-    model = Recipe
-    context_object_name = 'recipe'
+    recipe = get_object_or_404(Recipe, pk=pk, status=Recipe.STATUS_DRAFT)
+    if recipe.author != request.user:
+        raise PermissionDenied()
 
-    def get_object(self, queryset=None):
-        """
-        Return the object the view is displaying.
-        """
-        obj = super().get_object(queryset)
+    if request.method == 'POST':
+        recipe.delete()
+        return redirect(reverse('index'))
 
-        # check if draft
-        if obj.status == Recipe.STATUS_DRAFT:
-            # if draft, check whether user is author of the recipe
-            if obj.author != self.request.user:
-                raise PermissionDenied()
-        return obj
-
-
-class RecipesByCategoryList(ListView):
-    """
-    Shows list of published recipes in selected category.
-    """
-    model = Recipe
-    context_object_name = 'recipes_list'
-    template_name = 'catalog/recipes_list.html'
-    paginate_by = 10
-    allow_empty = True
-
-    def get_queryset(self):
-        # get Category's slug from url
-        slug = self.kwargs.get('slug')
-        self.category = get_object_or_404(Category, slug=slug)
-        # get queryset of recipes from that category
-        queryset = self.category.recipes\
-            .filter(status=Recipe.STATUS_PUBLISHED)\
-            .select_related('author')
-        return queryset
-
-    def get_context_data(self, object_list=None, **kwargs):
-        context = super().get_context_data()
-        context.update(category=self.category)
-        context.update(title=str(self.category))
-        return context
-
-
-class RecipesNewest(ListView):
-    """
-    Shows up to 100 most recent recipes with status 'published'.
-    """
-    model = Recipe
-    context_object_name = 'recipes_list'
-    template_name = 'catalog/recipes_list.html'
-    paginate_by = 10
-    allow_empty = True
-
-    extra_context = {
-        'title': 'Newest recipes'
+    # If 'GET' method
+    context = {
+        'recipe': recipe,
     }
-
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        queryset = queryset.filter(status=Recipe.STATUS_PUBLISHED)[:100]
-        return queryset
+    return render(request, 'catalog/recipe_delete.html', context)
 
 
 class MyRecipes(LoginRequiredMixin, ListView):
@@ -264,57 +216,48 @@ class MyDrafts(LoginRequiredMixin, ListView):
             status=Recipe.STATUS_DRAFT, author=self.request.user)
         return queryset
 
-# @login_required
-# @transaction.atomic  # atomic in case save_m2m() failed
-# def recipe_create(request):
-#     if request.method == "POST":
-#         recipe_form = RecipeForm(request.POST, prefix='recipe')
-#         ingredient_formset = IngredientFormSet(
-#             request.POST, prefix='ingredients')
-#         direction_formset = DirectionFormSet(
-#             request.POST, prefix='directions')
 
-#         if (recipe_form.is_valid()
-#                 and ingredient_formset.is_valid()
-#                 and direction_formset.is_valid()):
-#             # Create Recipe object. commit = False since we need to manually
-#             # set Author field before saving to db.
-#             recipe = recipe_form.save(commit=False)
-#             recipe.author = request.user
+class DraftDetail(DetailView):
+    """
+    Shows details of selected recipe with status 'draft'.
+    """
+    model = Recipe
+    context_object_name = 'recipe'
+    template_name = 'catalog/draft_detail.html'
 
-#             # Dumping ingredient_formset into json string.
-#             # Create list of dictionaries since such format can be used
-#             # as formset initial in Recipe editing view.
-#             ingredients = [{'desc': form.cleaned_data.get('desc')}
-#                            for form in ingredient_formset
-#                            if form.cleaned_data.get('desc') is not None]
-#             ingredients = json.dumps(ingredients)
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        queryset = queryset.prefetch_related('categories')
+        return queryset
 
-#             # Dumping direction_formset into json string.
-#             directions = [{'desc': form.cleaned_data.get('desc')}
-#                           for form in direction_formset
-#                           if form.cleaned_data.get('desc') is not None]
-#             directions = json.dumps(directions)
+    def get_object(self, queryset=None):
+        """
+        Return the object the view is displaying.
+        """
+        obj = super().get_object(queryset)
 
-#             # Set ingredients and directions to respective Recipe fields
-#             # and save object to db.
-#             recipe.ingredients = ingredients
-#             recipe.directions = directions
-#             recipe.save()
+        # check whether user is author of the recipe
+        if obj.author != self.request.user:
+            raise PermissionDenied()
 
-#             # Since earlier was used commit=False, we need to save m2m
-#             # relations manually.
-#             recipe_form.save_m2m()
+        return obj
 
-#             return redirect(reverse('recipe_edit', kwargs={'pk': recipe.pk}))
-#     else:
-#         recipe_form = RecipeForm(prefix='recipe')
-#         ingredient_formset = IngredientFormSet(prefix='ingredients')
-#         direction_formset = DirectionFormSet(prefix='directions')
 
-#     context = {
-#         'recipe_form': recipe_form,
-#         'ingredients_formset': ingredient_formset,
-#         'directions_formset': direction_formset,
-#     }
-#     return render(request, 'catalog/recipe_create.html', context)
+class MyFavourites(LoginRequiredMixin, ListView):
+    context_object_name = 'favourites_list'
+    template_name = 'catalog/favourites_list.html'
+    paginate_by = 10
+    allow_empty = True
+
+    extra_context = {
+        'title': 'Favourite recipes'
+    }
+
+    def get_queryset(self):
+        user = self.request.user
+        queryset = Favourite.objects\
+            .select_related('recipe')\
+            .filter(user=user)\
+            .order_by('-timestamp')
+        # queryset = Recipe.objects.filter(favourite__user=user)
+        return queryset

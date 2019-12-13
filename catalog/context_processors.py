@@ -3,7 +3,8 @@ from catalog.models import Recipe, Category
 
 def latest_recipes(request):
     '''
-    Return 5 most recent recipes
+    Return 10 most recent recipes
+    Not used, since recent recipes showed only in index. No need for this.
     '''
     recipes = Recipe.objects\
         .filter(status=Recipe.STATUS_PUBLISHED)\

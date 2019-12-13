@@ -6,16 +6,7 @@
 
 {% block content_block %}
 <div class="container">
-    <h1>
-        {% if user.is_authenticated %}
-            {% if is_liked %}
-                <i id="favourite-btn" class="fas fa-star fa-sm"></i>
-            {% else %}
-                <i id="favourite-btn" class="far fa-star fa-sm"></i>
-            {% endif %}
-        {% endif %}
-        {{ recipe.title }} 
-    </h1>
+    <h1>{{ recipe.title }}</h1>
         
     <div id="categories">
         {% for category in recipe.categories.all %}
@@ -36,9 +27,9 @@
     <div class="row">
         <div class="col-md-12">
             <div class="box box-shadowed">
-                <i class="fas fa-user-circle"></i> {{ recipe.author }} <br>
-                <i class="fas fa-clock"></i> {{ recipe.pub_date }} <br>
-                <i class="fas fa-heart"></i> {{ recipe.like_count }}
+                <a class="btn btn-primary" href="{% url 'recipe_edit' recipe.pk %}" role="button">Edit</a>
+                <a class="btn btn-primary" href="{% url 'recipe_publish' recipe.pk %}" role="button">Publish</a>
+                <a class="btn btn-primary" href="{% url 'recipe_delete' recipe.pk %}" role="button">Delete</a>
             </div>
                 
         </div>
@@ -65,30 +56,5 @@
             </div>
         </div>
     </div>
-    <script>
-        $("#favourite-btn").click(function(){
-            $(this)
-                .removeClass()
-                .addClass("fas fa-spinner fa-pulse fa-sm");
-            $.get("{% url 'favourite_toggle' recipe.pk %}")
-            .done(function(data){
-                if (data['created']){
-                    $("#favourite-btn")
-                        .removeClass()
-                        .addClass("fas fa-star fa-sm");
-                } else {
-                    $("#favourite-btn")
-                        .removeClass()
-                        .addClass("far fa-star fa-sm");
-                }
-            })
-            .fail(function(data, status, errorThrown){
-                alert("Oops! Something went wrong!\nStatus: " + errorThrown);
-                $("#favourite-btn")
-                    .removeClass()
-                    .addClass("fas fa-exclamation-circle");
-            });
-        }); 
-    </script>
 </div>    
 {% endblock content_block %}

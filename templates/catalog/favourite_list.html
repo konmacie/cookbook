@@ -10,15 +10,15 @@
 <div class="container">
     <h1>{{ title }}</h1>
         
-        {% for recipe in recipes_list %}
+        {% for favourite in favourites_list %}
             <div class="box-long box-shadowed">
-                <a href="{{ recipe.get_absolute_url }}">
-                    {% if recipe.photo %}
-                        <div class="image-box-long" style="background-image: url('{{ recipe.photo.url }}');"></div>
+                <a href="{{ favourite.recipe.get_absolute_url }}">
+                    {% if favourite.recipe.photo %}
+                        <div class="image-box-long" style="background-image: url('{{ favourite.recipe.photo.url }}');"></div>
                     {% else %}
                         <div class="image-box-long" style="background-image: url('{% get_media_prefix %}no-image.png');"></div>
                     {% endif %}
-                    <h5 style="padding-top: 5px;">{{ recipe|truncatechars:70}}</h5>
+                    <h5 style="padding-top: 5px;">{{ favourite.recipe|truncatechars:70}}</h5>
                 </a>
             </div>
         {% endfor %}
