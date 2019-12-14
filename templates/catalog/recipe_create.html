@@ -7,13 +7,15 @@
 {% block content_block %}
 <div class="container">
     <h2>Create new draft</h2>
-    <form method="POST">
-        {% csrf_token %}
-        {{ recipe_form.as_p }}
-
-            
-        <input type="submit" value="Next">
-    </form>
+    <div class="box box-shadowed">
+        <form method="POST">
+            {% csrf_token %}
+            {{ recipe_form.as_p }}
+    
+                
+            <input type="submit" value="Next">
+        </form>
+    </div>
 </div>    
 {% endblock content_block %}
     

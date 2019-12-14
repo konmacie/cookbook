@@ -6,12 +6,15 @@
 
 {% block content_block %}
 <div class="container">
-    <form method="post">
-        {% csrf_token %}
-        <p>Are you sure you want to <strong>delete</strong> <i>{{ recipe }}</i>?</p>
-        <input type="submit" value="Confirm">
-        <a href="{% url 'draft_detail' recipe.pk %}">Cancel</a>
-    </form>
+    <div class="box box-shadowed">
+        <form method="post">
+            {% csrf_token %}
+            <p>Are you sure you want to <strong>delete</strong> <i>{{ recipe }}</i>?</p>
+            <input type="submit" value="Confirm">
+            <a href="{% url 'draft_detail' recipe.pk %}">Cancel</a>
+        </form>
+    </div>
+    
 </div>
 {% endblock content_block %}
     

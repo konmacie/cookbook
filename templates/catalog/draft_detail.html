@@ -26,10 +26,10 @@
 
     <div class="row">
         <div class="col-md-12">
-            <div class="box box-shadowed">
-                <a class="btn btn-primary" href="{% url 'recipe_edit' recipe.pk %}" role="button">Edit</a>
-                <a class="btn btn-primary" href="{% url 'recipe_publish' recipe.pk %}" role="button">Publish</a>
-                <a class="btn btn-primary" href="{% url 'recipe_delete' recipe.pk %}" role="button">Delete</a>
+            <div style="text-align: center;" class="box box-shadowed">
+                <a style="width: 32%" class="btn btn-primary" href="{% url 'recipe_edit' recipe.pk %}" role="button">Edit</a>
+                <a style="width: 32%" class="btn btn-outline-primary" href="{% url 'recipe_publish' recipe.pk %}" role="button">Publish</a>
+                <a style="width: 32%" class="btn btn-outline-danger" href="{% url 'recipe_delete' recipe.pk %}" role="button">Delete</a>
             </div>
                 
         </div>

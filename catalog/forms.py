@@ -35,18 +35,18 @@ class RecipePhotoForm(forms.Form):
 
 
 class IngredientForm(forms.Form):
-    desc = forms.CharField(min_length=3, max_length=64)
+    desc = forms.CharField(min_length=3, max_length=64, required=False)
 
 
 IngredientFormSet = forms.formset_factory(
-    IngredientForm, extra=0, min_num=1, validate_min=True,
+    IngredientForm, extra=0, min_num=1, validate_min=False,
 )
 
 
 class DirectionForm(forms.Form):
-    desc = forms.CharField(min_length=6, max_length=254)
+    desc = forms.CharField(min_length=6, max_length=254, required=False)
 
 
 DirectionFormSet = forms.formset_factory(
-    DirectionForm, extra=0, min_num=1, validate_min=True
+    DirectionForm, extra=0, min_num=1, validate_min=False,
 )

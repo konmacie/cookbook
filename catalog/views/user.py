@@ -2,6 +2,7 @@
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import TemplateView, DetailView, ListView
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import transaction
@@ -41,6 +42,18 @@ def recipe_create_draft(request):
             # relations manually.
             recipe_form.save_m2m()
 
+            # add success message
+            messages.add_message(
+                request, messages.SUCCESS,
+                "Draft created succesfully!",
+                extra_tags="alert-success"
+            )
+            messages.add_message(
+                request, messages.INFO,
+                "You can now edit new recipe's draft. Be aware, that after "
+                "publishing, recipe can't be edited.",
+                extra_tags="alert-info"
+            )
             return redirect(reverse('recipe_edit', kwargs={'pk': recipe.pk}))
     else:
         recipe_form = RecipeForm(prefix='recipe')
@@ -80,17 +93,27 @@ def recipe_edit(request, pk):
                 and direction_formset.is_valid()
                 and photo_form.is_valid()):
             # Dumping ingredient_formset into json string.
-            ingredients = [{'desc': form.cleaned_data.get('desc')}
-                           for form in ingredient_formset
-                           if form.cleaned_data.get('desc') is not None]
-            ingredients = json.dumps(ingredients)
+            ingredients_list = [{'desc': form.cleaned_data.get('desc')}
+                                for form in ingredient_formset
+                                if form.cleaned_data.get('desc')]
+            ingredients = json.dumps(ingredients_list)
 
             # Dumping direction_formset into json string.
-            directions = [{'desc': form.cleaned_data.get('desc')}
-                          for form in direction_formset
-                          if form.cleaned_data.get('desc') is not None]
-            directions = json.dumps(directions)
+            directions_list = [{'desc': form.cleaned_data.get('desc')}
+                               for form in direction_formset
+                               if form.cleaned_data.get('desc')]
+            directions = json.dumps(directions_list)
 
+            # add warning message if ing. or dir. list is empty
+            if not ingredients_list or not directions_list:
+                messages.add_message(
+                    request, messages.WARNING,
+                    "Ingredients list or directions list is empty, "
+                    "this recipe can't be published.",
+                    extra_tags="alert-warning"
+                )
+
+            # get photo file if uploaded
             photo = request.FILES.get('photo-photo', None)
 
             # Set ingredients and directions to respective Recipe fields
@@ -102,6 +125,14 @@ def recipe_edit(request, pk):
             recipe.directions = directions
             recipe.save()
             recipe_form.save_m2m()
+
+            # add success message
+            messages.add_message(
+                request, messages.SUCCESS,
+                "Draft saved succesfully!",
+                extra_tags="alert-success"
+            )
+
             # Check which button was clicked
             if request.POST.get('save_publish'):
                 # If 'Save and publish'
@@ -109,6 +140,7 @@ def recipe_edit(request, pk):
                     reverse('recipe_publish', kwargs={'pk': recipe.pk}))
             # If 'Save draft' stays on the same page
             else:
+
                 return redirect(recipe)
 
     else:
@@ -118,6 +150,7 @@ def recipe_edit(request, pk):
             prefix='ingredients', initial=recipe.ingredients_list)
         direction_formset = DirectionFormSet(
             prefix='directions', initial=recipe.directions_list)
+
     context = {
         'recipe': recipe,
         'recipe_form': recipe_form,
@@ -139,10 +172,27 @@ def recipe_publish(request, pk):
     if recipe.author != request.user:
         raise PermissionDenied()
 
+    if not recipe.ingredients_list or not recipe.directions_list:
+        # add error message
+        messages.add_message(
+            request, messages.ERROR,
+            "Can't publish recipe - ingredients list and "
+            "directions list can't be empty.",
+            extra_tags="alert-danger"
+        )
+        return redirect(reverse('recipe_edit', kwargs={'pk': recipe.pk}))
+
     if request.method == 'POST':
         recipe.status = Recipe.STATUS_PUBLISHED
         recipe.pub_date = datetime.now()
         recipe.save()
+
+        # add success message
+        messages.add_message(
+            request, messages.SUCCESS,
+            "Recipe published succesfully!",
+            extra_tags="alert-success"
+        )
         return redirect(recipe)
 
     # If 'GET' method
@@ -166,6 +216,12 @@ def recipe_delete(request, pk):
 
     if request.method == 'POST':
         recipe.delete()
+        # add success message
+        messages.add_message(
+            request, messages.SUCCESS,
+            "Draft deleted succesfully!",
+            extra_tags="alert-success"
+        )
         return redirect(reverse('index'))
 
     # If 'GET' method
