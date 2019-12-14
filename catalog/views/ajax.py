@@ -1,13 +1,8 @@
 """ Views for ajax requests """
 
-from django.shortcuts import render, redirect, get_object_or_404
-from django.views.generic import TemplateView, DetailView, ListView
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db import transaction
+from django.shortcuts import get_object_or_404
 from django.core.exceptions import PermissionDenied
-from django.urls import reverse
-from django.http import HttpResponse, JsonResponse
+from django.http import JsonResponse
 
 
 from catalog.models import Recipe, Category, Favourite

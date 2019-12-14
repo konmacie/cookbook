@@ -1,19 +1,10 @@
 """ Views available without authentication """
 
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import get_object_or_404
 from django.views.generic import TemplateView, DetailView, ListView
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db import transaction
-from django.core.exceptions import PermissionDenied
-from django.urls import reverse
 from django.db.models import Count
 
-import json
-from datetime import datetime
 
-from catalog.forms import (
-    RecipeForm, IngredientFormSet, DirectionFormSet, RecipePhotoForm)
 from catalog.models import Recipe, Category, Favourite
 
 
