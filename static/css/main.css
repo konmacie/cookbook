@@ -132,6 +132,21 @@ ul.box-list {
 }
 
 
+
+#directions textarea {
+    resize: none;
+    width: 100%;
+    height: 100px;
+    margin-top: 15px;
+    margin-bottom: 10px;
+}
+
+ol#directions  {
+    list-style-position: inside;
+    padding-left: 10px;
+}
+
+
 .errorlist {
     color: #721c24;
     background-color:#f8d7da;

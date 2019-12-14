@@ -44,7 +44,8 @@ IngredientFormSet = forms.formset_factory(
 
 
 class DirectionForm(forms.Form):
-    desc = forms.CharField(min_length=6, max_length=254, required=False)
+    desc = forms.CharField(min_length=6, max_length=254,
+                           required=False, widget=forms.Textarea)
 
 
 DirectionFormSet = forms.formset_factory(
