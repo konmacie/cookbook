@@ -12,6 +12,8 @@ urlpatterns = [
          name='recipes_newest'),
     path('popular/', views.public.RecipesPopular.as_view(),
          name='recipes_popular'),
+    path('recipes/by/<int:pk>/', views.public.RecipesByUser.as_view(),
+         name='recipes_by_user'),
 
     # USER VIEWS
     path('recipe/new/', views.user.recipe_create_draft, name='recipe_create'),

@@ -3,6 +3,7 @@
 from django.shortcuts import get_object_or_404
 from django.views.generic import TemplateView, DetailView, ListView
 from django.db.models import Count
+from django.contrib.auth.models import User
 
 
 from catalog.models import Recipe, Category, Favourite
@@ -124,3 +125,32 @@ class RecipesPopular(ListView):
             .filter(like_count__gte=1)\
             .order_by('-like_count', '-pub_date')[:100]
         return queryset
+
+
+class RecipesByUser(ListView):
+    """
+    Shows recipes created by selected user
+    """
+    model = Recipe
+    context_object_name = 'recipes_list'
+    template_name = 'catalog/recipes_list.html'
+    paginate_by = 10
+    allow_empty = True
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        self.selected_user = get_object_or_404(User, pk=self.kwargs.get('pk'))
+
+        queryset = queryset.filter(
+            status=Recipe.STATUS_PUBLISHED,
+            author=self.selected_user
+        )
+
+        return queryset
+
+    def get_context_data(self, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        title = "Recipes by: {}".format(self.selected_user)
+        context['title'] = title
+        return context
