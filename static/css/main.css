@@ -1,5 +1,7 @@
 body {
     background-color: #FFF8F8;
+    min-height: 100vh;
+    position: relative;
 }
 
 header {
@@ -7,17 +9,24 @@ header {
     padding: 0;
 }
 
-footer {
-    margin: 30px 0 0 0;
+body > footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    margin: 0;
     padding: 10px;
     text-align: center;
     color: #ffffff;
 }
 
-footer i {
+body > footer i {
     color: #ffffff;
     text-decoration: none;
     font-size: x-large;
+}
+
+#content {
+    padding: 30px 0 80px;
 }
 
 .navbar-brand {
@@ -146,6 +155,19 @@ ol#directions  {
     padding-left: 10px;
 }
 
+
+#comments label{
+    display: none;
+}
+
+
+#comments textarea {
+    resize: none;
+    width: 100%;
+    height: 100px;
+    /* margin-top: 15px;
+    margin-bottom: 10px; */
+}
 
 .errorlist {
     color: #721c24;

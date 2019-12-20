@@ -18,6 +18,16 @@ h2 {
     margin: 20px 0;
 }
 
+input {
+    clear: both;
+    width: 100%;
+}
+
+.helptext, ul {
+    color: #5b5b5b;
+    font-size: smaller;
+}
+
 @media screen and (max-width: 500px) {
     .box-form {
         width: 95%;

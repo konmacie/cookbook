@@ -21,16 +21,15 @@
 </head>
 <body>
     {% include 'includes/navbar.html' %}
-    <span style="margin: 20px;"></span>
-    
-    {% include 'includes/messages.html' %}
+    <div id="content">
+        {% include 'includes/messages.html' %}
 
-    {% block content_block %}
-        <div class="jumbotron">No content yet!</div>
-    {% endblock content_block %}
+        {% block content_block %}
+            <div class="jumbotron">No content yet!</div>
+        {% endblock content_block %}
     
-    <span style="margin: 20px;"></span>
+    </div>
+    
     {% include 'includes/footer.html' %}
-
 </body>
 </html>
