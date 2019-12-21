@@ -65,6 +65,45 @@
             </div>
         </div>
     </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-shadowed" id="comments">
+                <h3>Comments:</h3>
+                
+                {% if user.is_authenticated %}
+                    <form id="comment-form" action="{% url 'add_comment' recipe.pk %}" method="post">
+                        {% csrf_token %}
+                        {{ comment_form.as_p }}
+                        <input type="submit" value="Add comment"></input>
+                        
+                    </form>
+                {% endif %}
+                
+                <div id="comment-list">
+                {% for comment in recipe.comments.all %}
+                    <div class="card" style="margin-top: 20px;">
+                        <div class="card-body">
+                        <blockquote class="blockquote mb-0">
+                            <p>{{ comment.text }}</p>
+                            <footer class="blockquote-footer">{{ comment }}</footer>
+                        </blockquote>
+                        </div>
+                    </div>
+                {% endfor %}
+                </div>
+                <div id="comment_empty" style="display: none;">
+                    <div class="card" style="margin-top: 20px;">
+                        <div class="card-body">
+                        <blockquote class="blockquote mb-0">
+                            <p>__comment_text__</p>
+                            <footer class="blockquote-footer">__comment_footer__</footer>
+                        </blockquote>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <script>
         $("#favourite-btn").click(function(){
             $(this)
@@ -89,6 +128,25 @@
                     .addClass("fas fa-exclamation-circle");
             });
         }); 
+
+        $("#comment-form").submit(function(event){
+            event.preventDefault()
+            console.log("submitted");
+
+            var form = $(this);
+
+            $.post(
+                "{% url 'add_comment' recipe.pk %}",
+                form.serialize()
+            )
+            .done(function(data){
+                var empty_comment = $('#comment_empty').html();
+                empty_comment = empty_comment.replace(/__comment_text__/g, data['comment']['text']);
+                empty_comment = empty_comment.replace(/__comment_footer__/g, data['comment']['title']);
+                $('#comment-list').prepend(empty_comment);
+                form[0].reset();
+            });
+        });
     </script>
 </div>    
 {% endblock content_block %}

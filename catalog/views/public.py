@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 
 
 from catalog.models import Recipe, Category, Favourite
+from catalog.forms import CommentForm
 
 
 class IndexView(TemplateView):
@@ -41,19 +42,31 @@ class RecipeDetail(DetailView):
         queryset = queryset\
             .filter(status=Recipe.STATUS_PUBLISHED)\
             .prefetch_related('categories')\
+            .prefetch_related('comments__user')\
             .annotate(like_count=Count('favourite'))
         return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # if user authenticated, check if they liked the recipe
-        is_liked = False
+
+        # add comments to context
+        # comments = self.object.comments.select_related('author')
+        # context['comments'] = comments
+
+        # if user authenticated...
         if self.request.user.is_authenticated:
+
+            # ... check if user liked recipe
             is_liked = Favourite.objects.filter(
                 recipe=self.object,
                 user=self.request.user
             ).exists()
-        context['is_liked'] = is_liked
+            context['is_liked'] = is_liked
+
+            # ... add comment form to context
+            comment_form = CommentForm()
+            context['comment_form'] = comment_form
+
         return context
 
 

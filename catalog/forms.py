@@ -1,6 +1,6 @@
 from django import forms
 from django.core.exceptions import ValidationError
-from catalog.models import Recipe, Category
+from catalog.models import Recipe, Category, Comment
 
 
 class RecipeForm(forms.ModelForm):
@@ -51,3 +51,12 @@ class DirectionForm(forms.Form):
 DirectionFormSet = forms.formset_factory(
     DirectionForm, extra=0, min_num=1, validate_min=False,
 )
+
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ('text',)
+
+    text = forms.CharField(min_length=10, max_length=250,
+                           required=True, widget=forms.Textarea)

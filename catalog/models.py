@@ -62,7 +62,7 @@ class Recipe(models.Model):
     title = models.CharField(max_length=254, blank=False)
     directions = models.TextField(blank=True)
     ingredients = models.TextField(blank=True)
-    edit_date = models.DateTimeField(auto_now_add=True)
+    edit_date = models.DateTimeField(auto_now=True)
     pub_date = models.DateTimeField(blank=True, null=True)
 
     photo = models.ImageField(
@@ -107,3 +107,22 @@ class Favourite(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
     timestamp = models.DateTimeField(auto_now_add=True)
+
+
+class Comment(models.Model):
+    class Meta:
+        verbose_name = 'Comment'
+        verbose_name_plural = 'Comments'
+        ordering = ['-pub_date']
+
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE,
+                               related_name='comments')
+    pub_date = models.DateTimeField(auto_now_add=True)
+
+    text = models.CharField(max_length=250, blank=False)
+
+    def __str__(self):
+        user = self.user or "Account deleted"
+        date = self.pub_date.strftime("%Y-%m-%d %H:%M:%S")
+        return "{} on {}".format(user, date)

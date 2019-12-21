@@ -34,4 +34,6 @@ urlpatterns = [
     # AJAX
     path('recipe/<int:pk>/favourite/', views.ajax.favourite_view,
          name='favourite_toggle'),
+    path('recipe/<int:pk>/add_comment/', views.ajax.add_comment_view,
+         name='add_comment'),
 ]
