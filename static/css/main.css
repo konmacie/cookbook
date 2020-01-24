@@ -140,7 +140,9 @@ ul.box-list {
     display: none;
 }
 
-
+textarea {
+    width: 100%;
+}
 
 #directions textarea {
     resize: none;

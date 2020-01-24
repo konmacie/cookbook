@@ -6,13 +6,13 @@ from catalog.models import Recipe, Category, Comment
 class RecipeForm(forms.ModelForm):
     '''
     Form used to create/edit Recipe model.
-    Has only 'title' and 'categories' fields.
+    Has only 'title', 'categories' and 'description' fields.
     'Directions' and 'Ingredients' will be created using different formsets
     and set to model fields in view.
     '''
     class Meta:
         model = Recipe
-        fields = ('title', 'categories', )
+        fields = ('title', 'categories', 'description', )
 
     # fields
     categories = forms.ModelMultipleChoiceField(

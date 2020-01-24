@@ -60,6 +60,7 @@ class Recipe(models.Model):
         default=STATUS_DRAFT,
     )
     title = models.CharField(max_length=254, blank=False)
+    description = models.TextField(blank=True)
     directions = models.TextField(blank=True)
     ingredients = models.TextField(blank=True)
     edit_date = models.DateTimeField(auto_now=True)
